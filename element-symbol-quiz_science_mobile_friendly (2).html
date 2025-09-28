@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Kru Pai Classroom — เกมเลือกสัญลักษณ์ธาตุ (Science / Mobile Friendly)</title>
+<style>
+  :root{
+    --bg:#f8fafc;
+    --card:#ffffff;
+    --brand:#2563eb;         
+    --brand-dark:#1e40af;
+    --accent:#facc15;        
+    --ink:#0f172a;
+    --muted:#64748b;
+    --ok:#16a34a;
+    --bad:#dc2626;
+    --shadow:0 10px 24px rgba(15,23,42,.08);
+    --radius:18px;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; font-family:"Prompt",system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+    background:
+      radial-gradient(1200px 500px at -10% -20%, rgba(37,99,235,.08), transparent 60%),
+      radial-gradient(900px 500px at 120% -10%, rgba(250,204,21,.18), transparent 60%),
+      var(--bg);
+    color:var(--ink);
+  }
+  .wrap{max-width:980px;margin:0 auto;padding:16px}
+  .brand{
+    display:flex;align-items:center;gap:12px;margin-bottom:14px;
+    background:#fff;border-radius:16px;box-shadow:var(--shadow);padding:10px 12px;
+    border:2px solid rgba(37,99,235,.1);
+  }
+  .logo-text{
+    width:52px;height:52px;border-radius:14px;
+    border:3px solid var(--accent);
+    box-shadow:0 6px 16px rgba(37,99,235,.18);
+    background:var(--brand); 
+    display:grid;place-items:center;
+    font-weight:900;font-size:18px;color:#fff;
+  }
+  .kp-title{font-weight:900;font-size:clamp(18px,3.4vw,24px); letter-spacing:.2px}
+  .kp-sub{color:var(--muted); font-size:13px}
+  .badge{display:inline-block;padding:4px 10px;border-radius:999px;background:var(--accent);color:#111827;font-weight:800;font-size:12px;margin-left:8px}
+  .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;border:2px solid rgba(37,99,235,.08)}
+  h1{margin:.2em 0 .4em 0;font-size:clamp(22px,5.5vw,32px)}
+  .muted{color:var(--muted)}
+  input[type="text"]{width:100%;padding:12px 14px;border:2px solid #e5e7eb;border-radius:14px;font-size:18px}
+  button{cursor:pointer;border:none;border-radius:14px;padding:12px 16px;font-size:18px;font-weight:800;background:var(--brand);color:#fff;box-shadow:var(--shadow);transition:.15s transform ease}
+  button:hover{transform:translateY(-1px)}
+  .btn-ghost{background:#fff;color:#111827;border:2px solid rgba(37,99,235,.25)}
+  /* Redesigned stats for mobile */
+  .stats{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:10px;
+    background:linear-gradient(90deg, rgba(37,99,235,.10), rgba(250,204,21,.14));
+    border:2px solid rgba(37,99,235,.15);
+    border-radius:18px;padding:12px;
+  }
+  .stat{
+    background:#fff;border:2px solid rgba(37,99,235,.2);border-radius:14px;
+    padding:8px 10px;display:flex;flex-direction:column;gap:4px;min-height:64px;
+  }
+  .stat .label{font-size:12px;letter-spacing:.3px;color:#475569}
+  .stat .value{font-size:18px;font-weight:900;line-height:1.1;color:#0f172a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .stat .value small{font-weight:800;color:#1f2937}
+  /* Question & Choices */
+  .question{background:#fff;border:2px dashed rgba(37,99,235,.35);border-radius:16px;padding:16px;font-size:clamp(18px,4.5vw,22px);text-align:center;margin:10px 0 14px 0}
+  .choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:8px}
+  .choice{border:3px solid rgba(37,99,235,.25);background:#fff;border-radius:16px;padding:16px;display:grid;place-items:center;font-size:clamp(20px,6vw,28px);font-weight:900;height:86px;transition:.12s ease; user-select:none}
+  .choice:hover{transform:translateY(-1px); box-shadow:0 8px 16px rgba(37,99,235,.10)}
+  .choice.correct{border-color:var(--ok);background:#ecfdf5}
+  .choice.wrong{border-color:var(--bad);background:#fef2f2}
+  .choice.lock{pointer-events:none;opacity:.75}
+  .footer-actions{display:flex;gap:12px;justify-content:center;margin-top:14px}
+  .score-big{font-size:clamp(28px,7vw,48px);font-weight:900;margin:0;color:var(--brand)}
+  .grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+  .small{font-size:14px}
+  /* Mobile breakpoints */
+  @media (max-width: 520px){
+    .wrap{padding:12px}
+    .stats{grid-template-columns:repeat(2,1fr);gap:8px;padding:10px}
+    .stat{min-height:60px}
+    .stat .label{font-size:11px}
+    .stat .value{font-size:17px}
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="brand">
+      <div class="logo-text">KP</div>
+      <div>
+        <div class="kp-title">Kru Pai Classroom <span class="badge">Science</span></div>
+        <div class="kp-sub">เกมเลือกสัญลักษณ์ธาตุ (Element Symbols) — Confuser + Auto-Advance</div>
+      </div>
+    </div>
+
+    <!-- START -->
+    <section id="screen-start" class="card">
+      <h1>พร้อมยัง? 🧪 เกมเลือก “สัญลักษณ์ธาตุ”</h1>
+      <p class="muted">เลือกสัญลักษณ์ธาตุที่ถูกต้อง แล้วสะสมคะแนน ✨</p>
+      <div class="grid-2">
+        <div>
+          <label class="muted">ชื่อผู้เล่น</label>
+          <input id="player" type="text" placeholder="เช่น อิงฟ้า, มะลิ..." />
+        </div>
+        <div>
+          <label class="muted">เวลาต่อข้อ (วินาที)</label>
+          <input id="sec" type="text" value="15" />
+          <div class="small muted" style="margin-top:6px">แก้ได้ เช่น 10, 15, 20</div>
+        </div>
+      </div>
+      <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
+        <button id="btnStart">เริ่มเล่นเลย</button>
+        <button class="btn-ghost" id="btnTry">ทดลอง 5 ข้อ</button>
+      </div>
+    </section>
+
+    <!-- GAME -->
+    <section id="screen-game" class="card" style="display:none">
+      <div class="stats">
+        <div class="stat">
+          <div class="label">ผู้เล่น</div>
+          <div class="value" id="whoName">-</div>
+        </div>
+        <div class="stat">
+          <div class="label">ข้อที่</div>
+          <div class="value"><span id="qIdx">1</span>/<span id="qTotal">40</span></div>
+        </div>
+        <div class="stat">
+          <div class="label">คะแนน</div>
+          <div class="value" id="score">0</div>
+        </div>
+        <div class="stat">
+          <div class="label">เวลา</div>
+          <div class="value"><span id="time">15</span><small>s</small></div>
+        </div>
+      </div>
+
+      <div class="question">
+        ธาตุ: <b><span id="qName">—</span></b>
+      </div>
+
+      <div class="choices" id="choices"></div>
+
+      <div class="small muted" style="text-align:center;margin-top:8px">© Kru Pai Classroom</div>
+    </section>
+
+    <!-- END -->
+    <section id="screen-end" class="card" style="display:none">
+      <h1>สรุปคะแนน ✨</h1>
+      <p class="score-big"><span id="finalScore">0</span> / <span id="finalTotal">40</span></p>
+      <p class="muted">สุดยอด! อยากลองใหม่กดปุ่มด้านล่าง</p>
+      <div class="footer-actions">
+        <button id="btnReplay">เล่นอีกครั้ง</button>
+        <button class="btn-ghost" id="btnBack">ย้อนกลับหน้าแรก</button>
+      </div>
+      <div class="small muted" style="text-align:center;margin-top:8px">© Kru Pai Classroom</div>
+    </section>
+  </div>
+
+<script>
+/* ====== ธาตุ 40 ตัวแรก ====== */
+const ELEMENTS = [
+  { th:"ไฮโดรเจน", sym:"H" },
+  { th:"ฮีเลียม", sym:"He" },
+  { th:"ลิเทียม", sym:"Li" },
+  { th:"เบริลเลียม", sym:"Be" },
+  { th:"โบรอน", sym:"B" },
+  { th:"คาร์บอน", sym:"C" },
+  { th:"ไนโตรเจน", sym:"N" },
+  { th:"ออกซิเจน", sym:"O" },
+  { th:"ฟลูออรีน", sym:"F" },
+  { th:"นีออน", sym:"Ne" },
+  { th:"โซเดียม", sym:"Na" },
+  { th:"แมกนีเซียม", sym:"Mg" },
+  { th:"อะลูมิเนียม", sym:"Al" },
+  { th:"ซิลิคอน", sym:"Si" },
+  { th:"ฟอสฟอรัส", sym:"P" },
+  { th:"กำมะถัน", sym:"S" },
+  { th:"คลอรีน", sym:"Cl" },
+  { th:"อาร์กอน", sym:"Ar" },
+  { th:"โพแทสเซียม", sym:"K" },
+  { th:"แคลเซียม", sym:"Ca" },
+  { th:"สแคนเดียม", sym:"Sc" },
+  { th:"ไทเทเนียม", sym:"Ti" },
+  { th:"วาเนเดียม", sym:"V" },
+  { th:"โครเมียม", sym:"Cr" },
+  { th:"แมงกานีส", sym:"Mn" },
+  { th:"เหล็ก", sym:"Fe" },
+  { th:"โคบอลต์", sym:"Co" },
+  { th:"นิกเกิล", sym:"Ni" },
+  { th:"ทองแดง", sym:"Cu" },
+  { th:"สังกะสี", sym:"Zn" },
+  { th:"แกลเลียม", sym:"Ga" },
+  { th:"เจอร์เมเนียม", sym:"Ge" },
+  { th:"สารหนู", sym:"As" },
+  { th:"ซีลีเนียม", sym:"Se" },
+  { th:"โบรมีน", sym:"Br" },
+  { th:"คริปทอน", sym:"Kr" },
+  { th:"รูบิเดียม", sym:"Rb" },
+  { th:"สตรอนเทียม", sym:"Sr" },
+  { th:"อิตเทรียม", sym:"Y" },
+  { th:"เซอร์โคเนียม", sym:"Zr" },
+];
+
+/* ====== ยูทิล ====== */
+const $ = (q)=>document.querySelector(q);
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function uniq(arr){return [...new Set(arr)]}
+
+/* ====== กลุ่มตัวอักษรที่สับสนบ่อย ====== */
+const CONFUSER_SETS = [
+  ["C","Cl","Cu","Cr","Co","Ca","Ce"],
+  ["S","Si","Se","Sc","Sr"],
+  ["N","Na","Ne","Ni"],
+  ["H","He","Hg","Hf"],
+  ["K","Kr"],
+  ["B","Be","Br","Ba","Bi"],
+  ["Al","Ag","Au"],
+  ["P","Pb","Pt","Pd"],
+  ["Fe","F"],
+  ["Ar","Ag"]
+];
+
+/* ====== similarity ====== */
+function similarityScore(target, cand){
+  if(target === cand) return -999;
+  let score = 0;
+  const t = target, c = cand;
+  if(t[0] === c[0]) score += 3;
+  if(t.length === c.length) score += 2;
+  if(t.includes(c[0]) || (c[1] && t.includes(c[1]))) score += 1;
+  if(CONFUSER_SETS.some(set => set.includes(t) && set.includes(c))) score += 3;
+  return score;
+}
+
+/* ====== make choices ====== */
+function makeChoices(correctSym){
+  const all = ELEMENTS.map(e=>e.sym);
+  const ranked = all.filter(s => s !== correctSym).map(s => ({s, sc: similarityScore(correctSym, s)})).sort((a,b)=> b.sc - a.sc);
+  const top = ranked.slice(0, 8).map(x=>x.s);
+  const picks = uniq([correctSym, ...top]).slice(0,4);
+  return shuffle(picks);
+}
+
+/* ====== state ====== */
+let QUESTIONS = [];
+let idx = 0;
+let score = 0;
+let timer = null;
+let remain = 15;
+let QUESTION_TIME = 15;
+let trialMode = false;
+let autoNextDelay = 800;
+
+/* ====== DOM ====== */
+const screenStart = $("#screen-start");
+const screenGame  = $("#screen-game");
+const screenEnd   = $("#screen-end");
+const whoName = $("#whoName");
+const qIdx = $("#qIdx");
+const qTotal = $("#qTotal");
+const scoreEl = $("#score");
+const timeEl = $("#time");
+const qName = $("#qName");
+const choicesBox = $("#choices");
+const finalScore = $("#finalScore");
+const finalTotal = $("#finalTotal");
+
+/* ====== render ====== */
+function renderQuestion(){
+  const q = QUESTIONS[idx];
+  qIdx.textContent = idx+1;
+  qTotal.textContent = QUESTIONS.length;
+  qName.textContent = q.th;
+  choicesBox.innerHTML = "";
+  const opts = makeChoices(q.sym);
+  opts.forEach(sym=>{
+    const div = document.createElement("div");
+    div.className = "choice";
+    div.textContent = sym;
+    div.onclick = ()=> handleAnswer(div, sym === q.sym);
+    choicesBox.appendChild(div);
+  });
+  startTimer();
+}
+function lockChoices(){ [...choicesBox.children].forEach(c=>c.classList.add("lock")); }
+function showCorrect(){ [...choicesBox.children].forEach(c=>{ if(c.textContent === QUESTIONS[idx].sym) c.classList.add("correct"); }); }
+
+function handleAnswer(node, isCorrect){
+  stopTimer();
+  lockChoices();
+  if(isCorrect){ score++; scoreEl.textContent = score; node.classList.add("correct"); }
+  else{ node.classList.add("wrong"); showCorrect(); }
+  setTimeout(nextQuestion, autoNextDelay);
+}
+
+function startTimer(){
+  remain = QUESTION_TIME;
+  timeEl.textContent = remain;
+  clearInterval(timer);
+  timer = setInterval(()=>{
+    remain--; timeEl.textContent = remain;
+    if(remain<=0){ stopTimer(); lockChoices(); showCorrect(); setTimeout(nextQuestion, autoNextDelay); }
+  },1000);
+}
+function stopTimer(){ clearInterval(timer); timer=null; }
+
+function nextQuestion(){ idx++; if(idx >= QUESTIONS.length){ endGame(); } else{ renderQuestion(); } }
+function endGame(){ stopTimer(); screenGame.style.display = "none"; screenEnd.style.display = "block"; finalScore.textContent = score; finalTotal.textContent = QUESTIONS.length; }
+
+function startGame({trial=false}={}){
+  const name = document.getElementById("player").value.trim() || "Player";
+  whoName.textContent = name;
+  const sec = parseInt(document.getElementById("sec").value,10);
+  QUESTION_TIME = (!isNaN(sec) && sec>0) ? sec : 15;
+  trialMode = !!trial;
+  const bank = shuffle([...ELEMENTS]);
+  QUESTIONS = trialMode ? bank.slice(0,5) : bank;
+  idx=0; score=0; scoreEl.textContent = score;
+  screenStart.style.display = "none";
+  screenEnd.style.display = "none";
+  screenGame.style.display = "block";
+  renderQuestion();
+}
+
+document.getElementById("btnStart").addEventListener("click", ()=> startGame({trial:false}));
+document.getElementById("btnTry").addEventListener("click",   ()=> startGame({trial:true}));
+document.getElementById("btnReplay").addEventListener("click", ()=> startGame({trial:false}));
+document.getElementById("btnBack").addEventListener("click", ()=>{ stopTimer(); screenEnd.style.display = "none"; screenStart.style.display = "block"; });
+</script>
+</body>
+</html>
